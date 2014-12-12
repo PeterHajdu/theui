@@ -1,0 +1,3 @@
+[submodule "igloo"]
+	path = thirdparty/igloo
+	url = https://github.com/joakimkarlsson/igloo.git
