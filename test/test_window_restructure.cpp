@@ -6,7 +6,14 @@
 using namespace igloo;
 
 
-Describe( a_window_restructure )
+Describe( a_list_window_restructure )
 {
+
+  It( is_instantiable )
+  {
+    the::ui::ListWindowRestructure list_window_restructure;
+    (void)list_window_restructure;
+  }
+
 };
 
