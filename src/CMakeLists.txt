@@ -1,5 +1,6 @@
 
 set(SOURCE_FILES
+  window.cpp
     )
 
 add_library(theui STATIC ${SOURCE_FILES})
