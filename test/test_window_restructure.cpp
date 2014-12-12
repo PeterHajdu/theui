@@ -5,15 +5,18 @@
 
 using namespace igloo;
 
-
 Describe( a_list_window_restructure )
 {
 
-  It( is_instantiable )
+  void SetUp()
   {
-    the::ui::ListWindowRestructure list_window_restructure;
-    (void)list_window_restructure;
+    window_restructure = the::ui::list_window_restructure;
   }
 
+  It( is_a_window_restructure )
+  {
+  }
+
+  the::ui::WindowRestructure window_restructure;
 };
 
