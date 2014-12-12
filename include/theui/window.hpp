@@ -10,7 +10,7 @@ namespace ui
 {
 
 class Window;
-void do_nothing_window_restructure( const Window& ) {}
+inline void do_nothing_window_restructure( const Window& ) {}
 
 class Window
 {
