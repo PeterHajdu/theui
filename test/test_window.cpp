@@ -33,17 +33,100 @@ Describe( a_window )
 
   Describe( dimensions )
   {
-    It(has_two_dimensions)
+    void SetUp()
     {
-      the::ui::Window window(top_left, size);
-      AssertThat( window.top_left().x, Equals( top_left.x ) );
-      AssertThat( window.top_left().y, Equals( top_left.y ) );
-      AssertThat( window.size().width, Equals( size.width ) );
-      AssertThat( window.size().height, Equals( size.height ) );
+      window = std::make_unique<the::ui::Window>( top_left, size );
     }
 
+    void assert_top_left_is( const the::ui::Window::Coordinate& expected_top_left )
+    {
+      AssertThat( window->top_left().x, Equals( expected_top_left.x ) );
+      AssertThat( window->top_left().y, Equals( expected_top_left.y ) );
+    }
+
+    void assert_size_is( const the::ui::Window::Size& expected_size )
+    {
+      AssertThat( window->size().width, Equals( expected_size.width ) );
+      AssertThat( window->size().height, Equals( expected_size.height ) );
+    }
+
+    It(has_two_dimensions)
+    {
+      assert_top_left_is( top_left );
+    }
+
+    It(can_be_moved)
+    {
+      window->move_to( another_top_left );
+      assert_top_left_is( another_top_left );
+    }
+
+    It(can_be_resized)
+    {
+      window->resize( another_size );
+      assert_size_is( another_size );
+    }
+
+    It(can_be_moved_and_resized_with_one_call)
+    {
+      window->move_and_resize( another_top_left, another_size );
+      assert_top_left_is( another_top_left );
+      assert_size_is( another_size );
+    }
+
+    const the::ui::Window::Coordinate top_left{1, 2};
+    const the::ui::Window::Coordinate another_top_left{10, 20};
+    const the::ui::Window::Size size{ 100, 200 };
+    const the::ui::Window::Size another_size{ 101, 201 };
+    the::ui::Window::Pointer window;
+  };
+
+  Describe( window_restructure )
+  {
+    void SetUp()
+    {
+      was_restructure_called = false;
+      number_of_restructure_calls = 0;
+      window = std::make_unique< the::ui::Window >(
+          top_left,
+          size,
+          [ &was_called = was_restructure_called,
+            &number_of_calls = number_of_restructure_calls ]( const the::ui::Window& )
+          {
+            ++number_of_calls;
+            was_called = true;
+          } );
+    }
+
+    It(calls_the_restructure_function_after_child_creation)
+    {
+      window->create_child();
+      AssertThat( was_restructure_called, Equals( true ) );
+    }
+
+    It(calls_the_restructure_function_when_moved)
+    {
+      window->move_to( { 1, 2 } );
+      AssertThat( was_restructure_called, Equals( true ) );
+    }
+
+    It(calls_the_restructure_function_when_resized)
+    {
+      window->resize( { 543, 234 } );
+      AssertThat( was_restructure_called, Equals( true ) );
+    }
+
+    It(calls_the_restructure_function_only_once_when_resized_and_moved)
+    {
+      window->move_and_resize( { 543, 234 }, { 543, 234 } );
+      AssertThat( number_of_restructure_calls, Equals( 1u ) );
+    }
+
+    the::ui::Window::Pointer window;
     const the::ui::Window::Coordinate top_left{0, 0};
     const the::ui::Window::Size size{ 100, 200 };
+    bool was_restructure_called;
+    size_t number_of_restructure_calls;
   };
 };
 
