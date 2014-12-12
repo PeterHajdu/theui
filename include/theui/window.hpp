@@ -26,6 +26,8 @@ class Window
         int height;
     };
 
+    Window() = default;
+
     Window(const Coordinate& coordinate, const Size& size )
       : m_top_left_corner( coordinate )
       , m_size( size )
