@@ -34,7 +34,7 @@ class Window
     };
 
     Window( Restructure window_restructure = do_nothing_window_restructure )
-      : m_window_restructure( window_restructure )
+      : m_window_restructure( std::move( window_restructure ) )
     {
     }
 
@@ -44,7 +44,7 @@ class Window
         Restructure window_restructure = do_nothing_window_restructure )
       : m_top_left_corner( coordinate )
       , m_size( size )
-      , m_window_restructure( window_restructure )
+      , m_window_restructure( std::move( window_restructure ) )
     {
     }
 
