@@ -50,9 +50,19 @@ class Window
     }
 
     template <typename T>
-    void dispatch( T&& event )
+    void dispatch( const T& event )
     {
-      m_dispatcher.dispatch( std::forward< T >( event ) );
+      m_dispatcher.dispatch( event );
+    }
+
+    template <typename T>
+    void broadcast( const T& event )
+    {
+      dispatch( event );
+      for ( auto& child : m_children )
+      {
+        child->broadcast( event );
+      }
     }
 
     Window& add_child( Pointer&& window )

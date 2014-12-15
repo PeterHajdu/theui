@@ -161,15 +161,57 @@ Describe( a_window )
 
   Describe( event_dispatch )
   {
+    void add_some_children()
+    {
+      for ( int i( 0 ); i < 5; ++i )
+      {
+        the::ui::Window& child( window->add_child( std::make_unique< test::Window >() ) );
+        for ( int i( 0 ); i < 2; ++i )
+        {
+          child.add_child( std::make_unique< test::Window >() );
+        }
+      }
+    }
+
     void SetUp()
     {
       window = std::make_unique< test::Window >();
+      add_some_children();
     }
 
     It( can_dispatch_an_event_to_a_single_window )
     {
       window->dispatch( test::AnEvent() );
       AssertThat( window->was_event_dispatched, Equals( true ) );
+    }
+
+    It( can_broadcast_an_event_to_children )
+    {
+      window->broadcast( test::AnEvent() );
+      for ( const auto& child : window->children() )
+      {
+        const test::Window& test_window( static_cast< const test::Window& >( *child ) );
+        AssertThat( test_window.was_event_dispatched, Equals( true ) );
+      }
+    }
+
+    It( dispatches_broadcasted_message_to_itself )
+    {
+      window->broadcast( test::AnEvent() );
+      AssertThat( window->was_event_dispatched, Equals( true ) );
+    }
+
+    It( dispatches_broadcasted_message_to_the_grandchildren )
+    {
+      window->broadcast( test::AnEvent() );
+      for ( const auto& child : window->children() )
+      {
+        for ( const auto& grandchild : child->children() )
+        {
+          const test::Window& test_window( static_cast< const test::Window& >( *grandchild ) );
+          AssertThat( test_window.was_event_dispatched, Equals( true ) );
+        }
+      }
     }
 
     std::unique_ptr< test::Window > window;
