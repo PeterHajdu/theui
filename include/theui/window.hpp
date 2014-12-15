@@ -51,6 +51,8 @@ class Window
     {
     }
 
+    virtual ~Window() = default;
+
     template <typename T>
     void dispatch( const T& event )
     {
