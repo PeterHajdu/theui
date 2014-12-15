@@ -62,6 +62,31 @@ Describe( a_pointer )
     AssertThat(&pointer->selected(), Equals(nth_child(children_count)));
   }
 
+  It(can_enter_to_a_lower_window_level)
+  {
+    pointer = std::make_unique< the::ui::Pointer >( *root_window );
+    pointer->enter();
+    AssertThat( &pointer->selected(), Equals( nth_child( 1 ) ) );
+  }
+
+  It(does_not_change_selection_when_entering_a_leaf_window)
+  {
+    pointer->enter();
+    AssertThat( &pointer->selected(), Equals( initializing_window ) );
+  }
+
+  It(can_escape_to_a_higher_window_level)
+  {
+    pointer->escape();
+    AssertThat( &pointer->selected(), Equals( root_window.get() ) );
+  }
+
+  It(does_not_change_selection_when_escaping_from_the_root_window)
+  {
+    pointer = std::make_unique< the::ui::Pointer >( *root_window );
+    pointer->escape();
+    AssertThat( &pointer->selected(), Equals( root_window.get() ) );
+  }
 
   std::unique_ptr< the::ui::Window > root_window;
   the::ui::Window* initializing_window;

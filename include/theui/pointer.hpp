@@ -45,6 +45,28 @@ class Pointer
       return *m_window;
     }
 
+    void enter()
+    {
+      const auto first_child( std::begin( m_window->children() ) );
+      if ( first_child == std::end( m_window->children() ) )
+      {
+        return;
+      }
+
+      m_window = first_child->get();
+    }
+
+    void escape()
+    {
+      auto parent_window( m_window->parent() );
+      if ( nullptr == parent_window )
+      {
+        return;
+      }
+
+      m_window = parent_window;
+    }
+
   private:
     Window::Container::const_iterator find_selected(const Window::Container& siblings) const
     {
