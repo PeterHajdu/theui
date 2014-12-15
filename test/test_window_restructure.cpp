@@ -32,7 +32,7 @@ Describe( a_list_window_restructure )
   void assert_each_window( F f )
   {
     AssertThat(
-        std::all_of( std::cbegin( *children ), std::cend( *children ), f ),
+        std::all_of( std::begin( *children ), std::end( *children ), f ),
         Equals( true ) );
   }
 
