@@ -1,18 +1,32 @@
 #pragma once
 
 #include <theui/window.hpp>
+#include <thectci/id.hpp>
 
 namespace the
 {
 namespace ui
 {
 
+class Arrive
+{
+  public:
+    add_ctci( "the_ui_arrive" );
+};
+
+class Leave
+{
+  public:
+    add_ctci( "the_ui_leave" );
+};
+
 class Pointer
 {
   public:
     Pointer(Window& window)
-      : m_window(&window)
-    {}
+    {
+      arrive_to( &window );
+    }
 
     void next()
     {
@@ -25,7 +39,7 @@ class Pointer
         next = std::begin(siblings);
       }
 
-      m_window = next->get();
+      arrive_to( next->get() );
     }
 
     void previous()
@@ -37,7 +51,7 @@ class Pointer
           std::end(siblings) - 1 :
           selected - 1 );
 
-      m_window = previous->get();
+      arrive_to( previous->get() );
     }
 
     Window& selected() const
@@ -53,7 +67,7 @@ class Pointer
         return;
       }
 
-      m_window = first_child->get();
+      arrive_to( first_child->get() );
     }
 
     void escape()
@@ -64,10 +78,21 @@ class Pointer
         return;
       }
 
-      m_window = parent_window;
+      arrive_to( parent_window );
     }
 
   private:
+    void arrive_to( the::ui::Window* new_window )
+    {
+      if ( m_window != nullptr )
+      {
+        m_window->dispatch( Leave() );
+      }
+
+      m_window = new_window;
+      new_window->dispatch( Arrive() );
+    }
+
     Window::Container::const_iterator find_selected(const Window::Container& siblings) const
     {
       auto selected (std::find_if( std::begin(siblings),std::end(siblings),

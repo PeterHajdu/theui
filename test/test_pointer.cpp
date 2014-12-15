@@ -2,6 +2,7 @@
 #include <theui/window.hpp>
 
 #include <memory>
+#include "test_window.hpp"
 
 #include <igloo/igloo.h>
 #include <igloo/igloo_alt.h>
@@ -10,9 +11,9 @@ using namespace igloo;
 
 Describe( a_pointer )
 {
-  the::ui::Window* nth_child(size_t n)
+  test::Window* nth_child(size_t n)
   {
-    return root_window->children()[n-1].get();
+    return static_cast< test::Window* >( root_window->children()[n-1].get() );
   }
 
   void point_to(size_t n)
@@ -23,10 +24,10 @@ Describe( a_pointer )
 
   void SetUp()
   {
-    root_window = std::make_unique< the::ui::Window > ();
+    root_window = std::make_unique< test::Window > ();
     for ( int i(0); i < children_count; ++i)
     {
-      root_window->add_child(std::make_unique< the::ui::Window > ());
+      root_window->add_child(std::make_unique< test::Window > ());
     }
     point_to(1);
   }
@@ -86,6 +87,20 @@ Describe( a_pointer )
     pointer = std::make_unique< the::ui::Pointer >( *root_window );
     pointer->escape();
     AssertThat( &pointer->selected(), Equals( root_window.get() ) );
+  }
+
+  It(dispatches_arrive_event_on_the_selected_window)
+  {
+    pointer->next();
+    const auto& selected_window( static_cast< const test::Window& >( pointer->selected() ) );
+    AssertThat( selected_window.did_arrive, Equals( true ) );
+  }
+
+  It(dispatches_leave_event_on_the_left_window)
+  {
+    pointer->next();
+    const auto& left_window( *nth_child( 1 ) );
+    AssertThat( left_window.did_leave, Equals( true ) );
   }
 
   std::unique_ptr< the::ui::Window > root_window;
