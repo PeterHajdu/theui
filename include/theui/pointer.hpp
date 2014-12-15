@@ -17,15 +17,9 @@ class Pointer
     void next()
     {
       const auto& siblings(m_window->parent()->children());
-      auto me(std::find_if( std::begin(siblings),std::end(siblings),
-          [current = m_window](const auto& sibling)
-          {
-            return current == sibling.get();
-          } ));
+      auto next(find_selected(siblings)+1);
 
-      assert(me != std::end(siblings));
 
-      auto next(me+1);
       if (std::end(siblings) == next)
       {
         next = std::begin(siblings);
@@ -34,12 +28,38 @@ class Pointer
       m_window = next->get();
     }
 
+    void previous()
+    {
+      const auto& siblings(m_window->parent()->children());
+      auto selected(find_selected(siblings));
+
+      auto previous(selected == std::begin(siblings) ?
+          std::end(siblings) - 1 :
+          selected - 1 );
+
+      m_window = previous->get();
+    }
+
     Window& selected() const
     {
       return *m_window;
     }
 
   private:
+    Window::Container::const_iterator find_selected(const Window::Container& siblings) const
+    {
+      auto selected (std::find_if( std::begin(siblings),std::end(siblings),
+          [current = m_window](const auto& sibling)
+          {
+            return current == sibling.get();
+          } ));
+
+      assert(selected != std::end(siblings));
+
+      return selected;
+    }
+
+
     Window* m_window;
 };
 

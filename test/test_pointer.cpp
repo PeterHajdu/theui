@@ -49,6 +49,19 @@ Describe( a_pointer )
     AssertThat(&pointer->selected(), Equals(nth_child(1)));
   }
 
+  It(can_jump_to_previous_window)
+  {
+    point_to(children_count);
+    pointer->previous();
+    AssertThat(&pointer->selected(), Equals(nth_child(children_count-1)));
+  }
+
+  It(jumps_to_the_last_window_from_the_first)
+  {
+    pointer->previous();
+    AssertThat(&pointer->selected(), Equals(nth_child(children_count)));
+  }
+
 
   std::unique_ptr< the::ui::Window > root_window;
   the::ui::Window* initializing_window;
