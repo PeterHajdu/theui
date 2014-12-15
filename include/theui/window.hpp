@@ -35,7 +35,8 @@ class Window
     };
 
     Window( Restructure window_restructure = do_nothing_window_restructure )
-      : m_window_restructure( std::move( window_restructure ) )
+      : m_parent(nullptr)
+      , m_window_restructure( std::move( window_restructure ) )
     {
     }
 
@@ -43,7 +44,8 @@ class Window
         const Coordinate& coordinate,
         const Size& size,
         Restructure window_restructure = do_nothing_window_restructure )
-      : m_top_left_corner( coordinate )
+      : m_parent(nullptr)
+      , m_top_left_corner( coordinate )
       , m_size( size )
       , m_window_restructure( std::move( window_restructure ) )
     {
@@ -67,7 +69,9 @@ class Window
 
     Window& add_child( Pointer&& window )
     {
+      Window& temporary_reference(*window);
       m_children.emplace_back( std::move( window ) );
+      temporary_reference.m_parent = this;
       restructure();
       return *m_children.back();
     }
@@ -75,6 +79,11 @@ class Window
     const Container& children() const
     {
       return m_children;
+    }
+
+    Window* parent() const
+    {
+      return m_parent;
     }
 
     const Coordinate& top_left() const
@@ -113,6 +122,7 @@ class Window
     }
 
     Container m_children;
+    Window* m_parent;
     Coordinate m_top_left_corner;
     Size m_size;
     Restructure m_window_restructure;

@@ -58,6 +58,12 @@ Describe( a_window )
       AssertThat(&new_child, Equals(window->children().back().get()));
     }
 
+    It(sets_parent_window)
+    {
+      auto& new_child( window->add_child( std::make_unique< the::ui::Window >() ) );
+      AssertThat(new_child.parent(), Equals(window.get()));
+    }
+
     the::ui::Window::Pointer window;
   };
 
