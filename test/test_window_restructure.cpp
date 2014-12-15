@@ -59,7 +59,7 @@ Describe( a_list_window_restructure )
     assert_each_window(
           [ height = size.height / children->size() ]( const auto& child ) -> bool
           {
-            return child->size().height == height;
+            return child->size().height == int( height );
           } );
   }
 
