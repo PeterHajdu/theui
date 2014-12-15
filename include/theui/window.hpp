@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 #include <functional>
+#include <thectci/dispatcher.hpp>
 
 namespace the
 {
@@ -46,6 +47,12 @@ class Window
       , m_size( size )
       , m_window_restructure( std::move( window_restructure ) )
     {
+    }
+
+    template <typename T>
+    void dispatch( T&& event )
+    {
+      m_dispatcher.dispatch( std::forward< T >( event ) );
     }
 
     template <typename...Ts>
@@ -100,6 +107,9 @@ class Window
     Coordinate m_top_left_corner;
     Size m_size;
     Restructure m_window_restructure;
+
+  protected:
+    the::ctci::Dispatcher m_dispatcher;
 };
 }
 }
