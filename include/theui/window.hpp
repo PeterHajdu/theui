@@ -55,10 +55,9 @@ class Window
       m_dispatcher.dispatch( std::forward< T >( event ) );
     }
 
-    template <typename...Ts>
-    Window& create_child( Ts&&...ts )
+    Window& add_child( Pointer&& window )
     {
-      m_children.push_back( std::make_unique< Window >( std::forward< Ts >( ts )... ) );
+      m_children.emplace_back( std::move( window ) );
       restructure();
       return *m_children.back();
     }

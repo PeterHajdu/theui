@@ -13,7 +13,7 @@ Describe( a_list_window_restructure )
   {
     for ( size_t i( 0 ); i < n; ++i )
     {
-      parent->create_child();
+      parent->add_child( std::make_unique< the::ui::Window >() );
     }
 
     children = &parent->children();

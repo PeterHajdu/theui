@@ -47,14 +47,14 @@ Describe( a_window )
 
     It(owns_children_windows)
     {
-      window->create_child();
+      window->add_child( std::make_unique< the::ui::Window >() );
       const auto& children(window->children());
       AssertThat(children, HasLength(1u));
     }
 
     It(returns_the_new_child_reference)
     {
-      auto& new_child(window->create_child());
+      auto& new_child( window->add_child( std::make_unique< the::ui::Window >() ) );
       AssertThat(&new_child, Equals(window->children().back().get()));
     }
 
@@ -130,7 +130,7 @@ Describe( a_window )
 
     It(calls_the_restructure_function_after_child_creation)
     {
-      window->create_child();
+      window->add_child( std::make_unique< the::ui::Window >() );
       AssertThat( was_restructure_called, Equals( true ) );
     }
 
