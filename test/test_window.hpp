@@ -23,13 +23,13 @@ class Window : public the::ui::Window
           } );
 
       m_dispatcher.register_listener< the::ui::Arrive >(
-          [ this ]( const auto& event )
+          [ this ]( const the::ui::Arrive& event )
           {
             handle_arrive( event );
           } );
 
       m_dispatcher.register_listener< the::ui::Leave >(
-          [ this ]( const auto& event )
+          [ this ]( const the::ui::Leave& event )
           {
             handle_leave( event );
           } );
