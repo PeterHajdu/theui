@@ -76,7 +76,7 @@ Describe( a_list_window_restructure )
   }
 
   const the::ui::Window::Coordinate top_left{ 100, 200 };
-  const the::ui::Window::Size size{ 1000, 2000 };
+  const the::ui::Size size{ 1000, 2000 };
   the::ui::Window::Pointer parent;
   the::ui::Window::Restructure restructure;
   const the::ui::Window::Container* children;

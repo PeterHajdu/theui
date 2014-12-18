@@ -26,7 +26,6 @@ class Window
     using Pointer = std::unique_ptr<the::ui::Window>;
     using Container = std::vector<Pointer>;
     using Restructure = std::function< void( const Window& ) >;
-    using Size = Size;
 
     class Coordinate
     {

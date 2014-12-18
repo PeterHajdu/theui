@@ -18,7 +18,7 @@ class TextBox: public Window
     TextBox(
         const Texts& content,
         const Window::Coordinate& top_left,
-        const Window::Size& window_size,
+        const Size& window_size,
         const CharSize& char_size)
       : Window(top_left, window_size)
       , m_lines( split_up( content ) )

@@ -53,7 +53,7 @@ Describe( a_window )
       AssertThat( window->top_left().y, Equals( expected_top_left.y ) );
     }
 
-    void assert_size_is( const the::ui::Window::Size& expected_size )
+    void assert_size_is( const the::ui::Size& expected_size )
     {
       AssertThat( window->size().width, Equals( expected_size.width ) );
       AssertThat( window->size().height, Equals( expected_size.height ) );
@@ -85,8 +85,8 @@ Describe( a_window )
 
     const the::ui::Window::Coordinate top_left{1, 2};
     const the::ui::Window::Coordinate another_top_left{10, 20};
-    const the::ui::Window::Size size{ 100, 200 };
-    const the::ui::Window::Size another_size{ 101, 201 };
+    const the::ui::Size size{ 100, 200 };
+    const the::ui::Size another_size{ 101, 201 };
     the::ui::Window::Pointer window;
   };
 
@@ -133,7 +133,7 @@ Describe( a_window )
 
     the::ui::Window::Pointer window;
     const the::ui::Window::Coordinate top_left{0, 0};
-    const the::ui::Window::Size size{ 100, 200 };
+    const the::ui::Size size{ 100, 200 };
     bool was_restructure_called;
     size_t number_of_restructure_calls;
   };

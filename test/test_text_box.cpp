@@ -127,7 +127,7 @@ Describe( a_text_box )
 
   std::unique_ptr<test::TextBox> text_box;
   const the::ui::Window::Coordinate top_left{70, 75};
-  const the::ui::Window::Size size{ 16 , 200 };
+  const the::ui::Size size{ 16 , 200 };
   const test::Text::Container content{ test::tokenize( test::lorem_ipsum ) };
 };
 
