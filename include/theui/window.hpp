@@ -13,25 +13,26 @@ namespace ui
 class Window;
 inline void do_nothing_window_restructure( const Window& ) {}
 
+class Size
+{
+  public:
+    int width;
+    int height;
+};
+
 class Window
 {
   public:
     using Pointer = std::unique_ptr<the::ui::Window>;
     using Container = std::vector<Pointer>;
     using Restructure = std::function< void( const Window& ) >;
+    using Size = Size;
 
     class Coordinate
     {
       public:
         int x;
         int y;
-    };
-
-    class Size
-    {
-      public:
-        int width;
-        int height;
     };
 
     Window( Restructure window_restructure = do_nothing_window_restructure )

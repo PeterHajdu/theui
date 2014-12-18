@@ -7,6 +7,7 @@ set(TEST_SOURCE_FILES
     test_window.cpp
     test_window_restructure.cpp
     test_pointer.cpp
+    test_text_box.cpp
     )
 
 
