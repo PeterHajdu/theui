@@ -37,6 +37,20 @@ Describe( a_window )
       AssertThat(new_child.parent(), Equals(window.get()));
     }
 
+    It(can_delete_a_children)
+    {
+      auto& new_child_1( window->add_child( std::make_unique< the::ui::Window >() ) );
+      auto& new_child_2( window->add_child( std::make_unique< the::ui::Window >() ) );
+      window->delete_child( &new_child_1 );
+      AssertThat(&new_child_1, !Equals(window->children().back().get()));
+      AssertThat(&new_child_2, Equals(window->children().back().get()));
+    }
+
+    It(handles_non_existent_child_deletion)
+    {
+      window->delete_child( nullptr );
+    }
+
     the::ui::Window::Pointer window;
   };
 
@@ -107,9 +121,17 @@ Describe( a_window )
           } );
     }
 
-    It(calls_the_restructure_function_after_child_creation)
+    It(calls_the_restructure_function_after_child_addition)
     {
       window->add_child( std::make_unique< the::ui::Window >() );
+      AssertThat( was_restructure_called, Equals( true ) );
+    }
+
+    It(calls_the_restructure_function_after_child_deletion)
+    {
+      const auto& new_window( window->add_child( std::make_unique< the::ui::Window >() ) );
+      was_restructure_called = false;
+      window->delete_child( &new_window );
       AssertThat( was_restructure_called, Equals( true ) );
     }
 

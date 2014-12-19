@@ -75,6 +75,23 @@ class Window
       }
     }
 
+    void delete_child( const Window* window )
+    {
+      auto to_be_deleted( std::find_if( std::begin( m_children ), std::end( m_children ),
+            [ window ]( const Pointer& child )
+            {
+              return child.get() == window;
+            } ) );
+
+      if ( to_be_deleted == std::end( m_children ) )
+      {
+        return;
+      }
+
+      m_children.erase( to_be_deleted );
+      restructure();
+    }
+
     Window& add_child( Pointer&& window )
     {
       Window& temporary_reference(*window);
