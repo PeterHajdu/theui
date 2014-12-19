@@ -112,8 +112,20 @@ Describe( a_text_box )
     AssertThat( last_line, Contains( test::to_token( "laborum." ) ) );
   }
 
+  It(splits_up_text_after_being_resized)
+  {
+    text_box->resize( new_size );
+    const auto& first_line( text_box->lines().front() );
+    AssertThat( first_line, Contains( test::to_token( "Lorem" ) ) );
+    AssertThat( first_line, Contains( test::to_token( "ipsum" ) ) );
+    AssertThat( first_line, Contains( test::to_token( "dolor" ) ) );
+    AssertThat( first_line, Contains( test::to_token( "sit" ) ) );
+    AssertThat( first_line, !Contains( test::to_token( "amet," ) ) );
+  }
+
   It(lets_see)
   {
+    text_box->resize( { 40, 200 } );
     std::cout << std::endl;
     for ( const auto& line : text_box->lines() )
     {
@@ -128,6 +140,7 @@ Describe( a_text_box )
   std::unique_ptr<test::TextBox> text_box;
   const the::ui::Window::Coordinate top_left{70, 75};
   const the::ui::Size size{ 16 , 200 };
+  const the::ui::Size new_size{ 22 , 200 };
   const test::Text::Container content{ test::tokenize( test::lorem_ipsum ) };
 };
 

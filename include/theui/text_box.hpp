@@ -23,6 +23,7 @@ class TextBox: public Window
       : Window(top_left, window_size)
       , m_lines( split_up( content ) )
     {
+      m_dispatcher.register_listener< Resized >( [ this ]( const Resized& ){ handle_resize(); } );
     }
 
     using Line = Texts;
@@ -62,8 +63,17 @@ class TextBox: public Window
       return lines;
     }
 
-    Lines m_lines;
+    void handle_resize()
+    {
+      Line collapsed_lines;
+      for ( const auto& line : m_lines )
+      {
+        std::copy( std::begin( line ), std::end( line ), std::back_inserter( collapsed_lines ) );
+      }
+      split_up( collapsed_lines ).swap( m_lines );
+    }
 
+    Lines m_lines;
 };
 }
 }
