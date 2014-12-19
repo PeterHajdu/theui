@@ -196,5 +196,27 @@ Describe( a_window )
     std::unique_ptr< test::Window > window;
   };
 
+  Describe( resize_events )
+  {
+    void SetUp()
+    {
+      window = std::make_unique< test::Window >();
+    }
+
+    It( dispatches_resized_event_when_resized )
+    {
+      window->resize( { 123, 987 } );
+      AssertThat( window->was_resized, Equals( true ) );
+    }
+
+    It( dispatches_resized_event_when_moved_and_resized )
+    {
+      window->move_and_resize( { 123, 987 }, { 123, 987 } );
+      AssertThat( window->was_resized, Equals( true ) );
+    }
+
+    std::unique_ptr< test::Window > window;
+  };
+
 };
 

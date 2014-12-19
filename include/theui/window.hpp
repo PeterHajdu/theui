@@ -20,6 +20,12 @@ class Size
     int height;
 };
 
+class Resized
+{
+  public:
+    add_ctci( "the_ui_resized" );
+};
+
 class Window
 {
   public:
@@ -106,18 +112,24 @@ class Window
 
     void resize( const Size& new_size )
     {
-      m_size = new_size;
+      resize_and_notify( new_size );
       restructure();
     }
 
     void move_and_resize( const Coordinate& new_top_left, const Size& new_size )
     {
       m_top_left_corner = new_top_left;
-      m_size = new_size;
+      resize_and_notify( new_size );
       restructure();
     }
 
   private:
+    void resize_and_notify( const Size& new_size )
+    {
+      m_size = new_size;
+      m_dispatcher.dispatch( the::ui::Resized() );
+    }
+
     void restructure()
     {
       m_window_restructure( *this );

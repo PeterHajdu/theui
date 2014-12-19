@@ -33,6 +33,12 @@ class Window : public the::ui::Window
           {
             handle_leave( event );
           } );
+
+      m_dispatcher.register_listener< the::ui::Resized >(
+          [ this ]( const the::ui::Resized& event )
+          {
+            handle_resized( event );
+          } );
     }
 
     bool was_event_dispatched{ false };
@@ -51,6 +57,12 @@ class Window : public the::ui::Window
     void handle_leave( const the::ui::Leave& )
     {
       did_leave = true;
+    }
+
+    bool was_resized{ false };
+    void handle_resized( const the::ui::Resized& )
+    {
+      was_resized = true;
     }
 };
 
