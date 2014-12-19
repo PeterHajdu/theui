@@ -51,6 +51,15 @@ Describe( a_window )
       window->delete_child( nullptr );
     }
 
+    It(can_delete_all_children)
+    {
+      auto& new_child_1( window->add_child( std::make_unique< the::ui::Window >() ) );
+      auto& new_child_2( window->add_child( std::make_unique< the::ui::Window >() ) );
+      window->clear();
+      AssertThat(&new_child_1, !Equals(window->children().back().get()));
+      AssertThat(&new_child_2, !Equals(window->children().back().get()));
+    }
+
     the::ui::Window::Pointer window;
   };
 

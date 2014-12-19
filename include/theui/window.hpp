@@ -92,6 +92,11 @@ class Window
       restructure();
     }
 
+    void clear()
+    {
+      m_children.clear();
+    }
+
     Window& add_child( Pointer&& window )
     {
       Window& temporary_reference(*window);
