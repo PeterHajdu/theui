@@ -73,8 +73,7 @@ Describe( a_text_box )
     text_box = std::make_unique<test::TextBox>(
         content,
         top_left,
-        size,
-        the::ui::CharSize{10, 20});
+        size );
   }
 
   It(is_a_window)
