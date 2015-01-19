@@ -32,6 +32,11 @@ class TextBox: public Window
       return m_lines;
     }
 
+    void set_content( const Texts& content )
+    {
+      split_up( content ).swap( m_lines );
+    }
+
   private:
     Lines split_up( const Texts& content )
     {

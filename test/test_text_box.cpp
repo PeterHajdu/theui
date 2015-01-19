@@ -136,6 +136,17 @@ Describe( a_text_box )
     }
   }
 
+  It(lets_you_assign_new_content)
+  {
+    const char * new_text( "new content" );
+    const test::Text::Container new_content{ test::tokenize( new_text ) };
+    text_box->set_content( new_content );
+
+    const auto& first_line( text_box->lines().front() );
+    AssertThat( first_line, Contains( test::to_token( "new" ) ) );
+    AssertThat( first_line, Contains( test::to_token( "content" ) ) );
+  }
+
   std::unique_ptr<test::TextBox> text_box;
   const the::ui::Window::Coordinate top_left{70, 75};
   const the::ui::Size size{ 16 , 200 };
