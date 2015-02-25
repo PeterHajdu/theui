@@ -23,7 +23,8 @@ class Leave
 class Pointer
 {
   public:
-    Pointer(Window& window)
+    Pointer( Window& window )
+      : m_window( nullptr )
     {
       arrive_to( &window );
     }
