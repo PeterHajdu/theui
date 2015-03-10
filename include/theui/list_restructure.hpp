@@ -9,7 +9,8 @@ namespace ui
 {
 class Window;
 
-inline void list_window_restructure( const Window& parent )
+inline void
+list_window_restructure( const Window& parent )
 {
   const auto& x( parent.top_left().x );
   const auto& width( parent.size().width );
