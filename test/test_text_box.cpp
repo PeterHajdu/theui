@@ -22,6 +22,11 @@ class Text
     {
     }
 
+    int height() const
+    {
+      return 2;
+    }
+
     int width() const
     {
       return word.size();
@@ -81,13 +86,19 @@ Describe( a_text_box )
     AssertThat(dynamic_cast<the::ui::Window*>(text_box.get()) != nullptr, Equals(true));
   }
 
-  It(sets_the_correct_window_size_and_coordinate)
+  It(sets_window_size_and_coordinate_passed_by_the_constructor_except_the_height )
   {
     AssertThat(text_box->top_left().x, Equals(top_left.x));
     AssertThat(text_box->top_left().y, Equals(top_left.y));
     AssertThat(text_box->size().width, Equals(size.width));
-    AssertThat(text_box->size().height, Equals(size.height));
   }
+
+  It(increases_its_height_to_be_able_to_hold_the_text_after_splitting_it_to_many_lines)
+  {
+    const int number_of_lines( text_box->lines().size() );
+    AssertThat( text_box->size().height, Equals( number_of_lines * content.back().height() ) );
+  }
+
 
   It(splits_up_text_in_the_first_line)
   {
@@ -149,7 +160,7 @@ Describe( a_text_box )
 
   std::unique_ptr<test::TextBox> text_box;
   const the::ui::Window::Coordinate top_left{70, 75};
-  const the::ui::Size size{ 16 , 200 };
+  const the::ui::Size size{ 16 , 2 };
   const the::ui::Size new_size{ 22 , 200 };
   const test::Text::Container content{ test::tokenize( test::lorem_ipsum ) };
 };

@@ -20,8 +20,8 @@ class TextBox: public Window
         const Window::Coordinate& top_left,
         const Size& window_size )
       : Window(top_left, window_size)
-      , m_lines( split_up( content ) )
     {
+      set_content_and_resize_if_needed( content );
       m_dispatcher.register_listener< Resized >( [ this ]( const Resized& ){ handle_resize(); } );
     }
 
@@ -34,10 +34,45 @@ class TextBox: public Window
 
     void set_content( const Texts& content )
     {
-      split_up( content ).swap( m_lines );
+      set_content_and_resize_if_needed( content );
     }
 
   private:
+    void handle_resize()
+    {
+      Line collapsed_lines;
+      for ( const auto& line : m_lines )
+      {
+        std::copy(
+            std::begin( line ), std::end( line ),
+            std::back_inserter( collapsed_lines ) );
+      }
+      set_content_and_resize_if_needed( collapsed_lines );
+    }
+
+
+    void set_content_and_resize_if_needed( const Texts& content )
+    {
+      const auto previous_number_of_lines( m_lines.size() );
+      split_up( content ).swap( m_lines );
+
+      if ( previous_number_of_lines != m_lines.size() )
+      {
+        update_height_to_fit_text();
+      }
+    }
+
+
+    void update_height_to_fit_text()
+    {
+      const int needed_height(
+          m_lines.back().back().height() * m_lines.size() );
+      const int keep_width( size().width );
+      resize( { keep_width, needed_height } );
+    }
+
+
+    //todo: extract to function outside of TextBox
     Lines split_up( const Texts& content )
     {
       Lines lines;
@@ -65,16 +100,6 @@ class TextBox: public Window
       }
 
       return lines;
-    }
-
-    void handle_resize()
-    {
-      Line collapsed_lines;
-      for ( const auto& line : m_lines )
-      {
-        std::copy( std::begin( line ), std::end( line ), std::back_inserter( collapsed_lines ) );
-      }
-      split_up( collapsed_lines ).swap( m_lines );
     }
 
     Lines m_lines;
