@@ -22,7 +22,11 @@ class TextBox: public Window
       : Window(top_left, window_size)
     {
       set_content_and_resize_if_needed( content );
-      m_dispatcher.register_listener< Resized >( [ this ]( const Resized& ){ handle_resize(); } );
+      m_dispatcher.register_listener< Resized >(
+          [ this ]( const Resized& )
+          {
+            handle_resize();
+          } );
     }
 
     using Line = Texts;
