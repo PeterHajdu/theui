@@ -18,6 +18,12 @@ class Size
   public:
     int width;
     int height;
+    bool operator==( const Size& other ) const
+    {
+      return
+        width == other.width &&
+        height == other.height;
+    }
 };
 
 class Resized
@@ -38,11 +44,19 @@ class Window
       public:
         int x;
         int y;
+
+        bool operator==( const Coordinate& other ) const
+        {
+          return
+            x == other.x &&
+            y == other.y;
+        }
     };
 
     Window( Restructure window_restructure = do_nothing_window_restructure )
       : m_parent(nullptr)
       , m_window_restructure( std::move( window_restructure ) )
+      , m_is_visible( true )
     {
     }
 
@@ -54,6 +68,7 @@ class Window
       , m_top_left_corner( coordinate )
       , m_size( size )
       , m_window_restructure( std::move( window_restructure ) )
+      , m_is_visible( true )
     {
     }
 
@@ -121,6 +136,13 @@ class Window
       return m_top_left_corner;
     }
 
+    Coordinate bottom_right() const
+    {
+      return {
+        m_top_left_corner.x + m_size.width,
+        m_top_left_corner.y + m_size.height };
+    }
+
     const Size& size() const
     {
       return m_size;
@@ -130,6 +152,7 @@ class Window
     {
       m_top_left_corner = new_top_left;
       restructure();
+      set_visibility();
     }
 
     void resize( const Size& new_size )
@@ -145,10 +168,30 @@ class Window
       restructure();
     }
 
+    bool is_visible() const
+    {
+      return m_is_visible;
+    }
+
   private:
+    void set_visibility()
+    {
+      if ( nullptr == parent() )
+      {
+        return;
+      }
+
+      m_is_visible =
+        top_left().x >= parent()->top_left().x &&
+        top_left().y >= parent()->top_left().y &&
+        bottom_right().y <= parent()->bottom_right().y &&
+        bottom_right().x <= parent()->bottom_right().x;
+    }
+
     void resize_and_notify( const Size& new_size )
     {
       m_size = new_size;
+      set_visibility();
       m_dispatcher.dispatch( the::ui::Resized() );
     }
 
@@ -162,9 +205,11 @@ class Window
     Coordinate m_top_left_corner;
     Size m_size;
     Restructure m_window_restructure;
+    bool m_is_visible;
 
   protected:
     the::ctci::Dispatcher m_dispatcher;
 };
+
 }
 }

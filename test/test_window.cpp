@@ -15,7 +15,7 @@ Describe( a_window )
   {
     void SetUp()
     {
-      window = std::make_unique<the::ui::Window>();
+      window = std::make_unique<the::ui::Window>( top_left, size );
     }
 
     It(owns_children_windows)
@@ -29,6 +29,43 @@ Describe( a_window )
     {
       auto& new_child( window->add_child( std::make_unique< the::ui::Window >() ) );
       AssertThat(&new_child, Equals(window->children().back().get()));
+    }
+
+    It(is_visible_by_default)
+    {
+      AssertThat( window->is_visible(), Equals( true ) );
+    }
+
+    It(becomes_invisible_if_it_is_moved_outside_the_borders_of_parent_window)
+    {
+      auto& new_child( window->add_child( std::make_unique< the::ui::Window >( top_left, size ) ) );
+      const the::ui::Window::Coordinate left_of_parent{ top_left.x - 1, top_left.y };
+      new_child.move_to( left_of_parent );
+      AssertThat( new_child.is_visible(), Equals( false ) );
+
+      const the::ui::Window::Coordinate above_parent{ top_left.x, top_left.y - 1 };
+      new_child.move_to( above_parent );
+      AssertThat( new_child.is_visible(), Equals( false ) );
+
+      const the::ui::Window::Coordinate below_parent{ top_left.x, top_left.y + 1 };
+      new_child.move_to( below_parent );
+      AssertThat( new_child.is_visible(), Equals( false ) );
+
+      const the::ui::Window::Coordinate right_of_parent{ top_left.x + 1, top_left.y };
+      new_child.move_to( right_of_parent );
+      AssertThat( new_child.is_visible(), Equals( false ) );
+    }
+
+    It(becomes_invisible_if_it_is_resized_outside_the_borders_of_parent_window)
+    {
+      auto& new_child( window->add_child( std::make_unique< the::ui::Window >( top_left, size ) ) );
+      const the::ui::Size wider_than_parent{ size.width + 1, size.height };
+      new_child.resize( wider_than_parent );
+      AssertThat( new_child.is_visible(), Equals( false ) );
+
+      const the::ui::Size higher_than_parent{ size.width, size.height + 1 };
+      new_child.resize( higher_than_parent );
+      AssertThat( new_child.is_visible(), Equals( false ) );
     }
 
     It(sets_parent_window)
@@ -61,6 +98,8 @@ Describe( a_window )
     }
 
     the::ui::Window::Pointer window;
+    const the::ui::Window::Coordinate top_left{ 1, 2 };
+    const the::ui::Size size{ 100, 200 };
   };
 
   Describe( dimensions )
@@ -72,14 +111,12 @@ Describe( a_window )
 
     void assert_top_left_is( const the::ui::Window::Coordinate& expected_top_left )
     {
-      AssertThat( window->top_left().x, Equals( expected_top_left.x ) );
-      AssertThat( window->top_left().y, Equals( expected_top_left.y ) );
+      AssertThat( window->top_left(), Equals( expected_top_left ) );
     }
 
     void assert_size_is( const the::ui::Size& expected_size )
     {
-      AssertThat( window->size().width, Equals( expected_size.width ) );
-      AssertThat( window->size().height, Equals( expected_size.height ) );
+      AssertThat( window->size(), Equals( expected_size ) );
     }
 
     It(has_two_dimensions)
@@ -91,6 +128,14 @@ Describe( a_window )
     {
       window->move_to( another_top_left );
       assert_top_left_is( another_top_left );
+    }
+
+    It(calculates_bottom_right)
+    {
+      const the::ui::Window::Coordinate expected_bottom_right_corner{
+        top_left.x + size.width,
+        top_left.y + size.height };
+      AssertThat( window->bottom_right(), Equals( expected_bottom_right_corner ) );
     }
 
     It(can_be_resized)
