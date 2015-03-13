@@ -22,7 +22,7 @@ class WindowResizer
 
 
     inline void
-    resize_to_equal_heights() const
+    fit_with_equal_height() const
     {
       const int child_height( m_parent.size().height / m_parent.children().size() );
       int next_y( m_parent.top_left().y );
@@ -36,7 +36,7 @@ class WindowResizer
 
 
     inline void
-    resize_with_original_heights() const
+    front_from_top_with_fixed_height() const
     {
       int next_y( m_parent.top_left().y );
 
@@ -45,6 +45,25 @@ class WindowResizer
         const int original_height( child->size().height );
         resize_with_y_and_height( next_y, original_height, *child );
         next_y += original_height;
+      }
+    }
+
+
+    inline void
+    back_from_bottom_with_fixed_height() const
+    {
+      int next_y( m_parent.bottom_right().y );
+
+      const auto& children( m_parent.children() );
+      for (
+          auto child_it( children.rbegin() );
+            child_it != children.rend();
+            ++child_it )
+      {
+        Window& child( **child_it );
+        const int original_height( child.size().height );
+        next_y -= original_height;
+        resize_with_y_and_height( next_y, original_height, child );
       }
     }
 
@@ -64,15 +83,21 @@ class WindowResizer
 };
 
 inline void
-list_window_restructure( const Window& parent )
+fit_with_equal_height( const Window& parent )
 {
-  WindowResizer( parent ).resize_to_equal_heights();
+  WindowResizer( parent ).fit_with_equal_height();
 }
 
 inline void
-list_window_restructure_with_fixed_height_from_top( const Window& parent )
+front_from_top_with_fixed_height( const Window& parent )
 {
-  WindowResizer( parent ).resize_with_original_heights();
+  WindowResizer( parent ).front_from_top_with_fixed_height();
+}
+
+inline void
+back_from_bottom_with_fixed_height( const Window& parent )
+{
+  WindowResizer( parent ).back_from_bottom_with_fixed_height();
 }
 
 }

@@ -60,7 +60,7 @@ class WindowRestructureBundle
 
 }
 
-Describe( a_list_window_restructure )
+Describe( list_restructure_fit_with_equal_height )
 {
 
   void SetUp()
@@ -68,7 +68,7 @@ Describe( a_list_window_restructure )
     restructure_bundle = std::make_unique< test::WindowRestructureBundle >(
         top_left,
         size,
-        the::ui::list_window_restructure,
+        the::ui::fit_with_equal_height,
         number_of_children );
     restructure_bundle->restructure();
   }
@@ -123,7 +123,7 @@ Describe( a_list_window_restructure )
   const the::ui::Size size{ 1000, 2000 };
 };
 
-Describe( a_list_window_restructure_with_fixed_height_from_top )
+Describe( list_restructure_front_from_top_with_fixed_height )
 {
 
   void SetUp()
@@ -131,7 +131,7 @@ Describe( a_list_window_restructure_with_fixed_height_from_top )
     restructure_bundle = std::make_unique< test::WindowRestructureBundle >(
         top_left,
         size,
-        the::ui::list_window_restructure_with_fixed_height_from_top,
+        the::ui::front_from_top_with_fixed_height,
         number_of_children );
     restructure_bundle->restructure();
   }
@@ -186,3 +186,68 @@ Describe( a_list_window_restructure_with_fixed_height_from_top )
   const the::ui::Size size{ 1000, 2000 };
 };
 
+
+Describe( list_restructure_back_from_bottom_with_fixed_height )
+{
+
+  void SetUp()
+  {
+    restructure_bundle = std::make_unique< test::WindowRestructureBundle >(
+        top_left,
+        size,
+        the::ui::back_from_bottom_with_fixed_height,
+        number_of_children );
+    restructure_bundle->restructure();
+  }
+
+  const the::ui::Window::Container& children()
+  {
+    return restructure_bundle->parent.children();
+  }
+
+  It( sets_the_top_left_x_coordinate_to_the_parents )
+  {
+    restructure_bundle->assert_each_child(
+          [ x = top_left.x ]( const auto& child ) -> bool
+          {
+            return x == child->top_left().x;
+          } );
+  }
+
+  It( sets_the_width_to_the_parents )
+  {
+    restructure_bundle->assert_each_child(
+          [ width = size.width ]( const auto& child ) -> bool
+          {
+            return child->size().width == width;
+          } );
+  }
+
+  It( does_not_touch_original_height )
+  {
+    restructure_bundle->assert_each_child(
+          [ original_height = restructure_bundle->original_child_size.height ]( const auto& child ) -> bool
+          {
+            return child->size().height == original_height;
+          } );
+  }
+
+  It( prints_from_the_back_of_the_list_bound_to_the_bottom )
+  {
+    const auto child_height( restructure_bundle->original_child_size.height );
+    int next_y(
+        restructure_bundle->parent.bottom_right().y -
+        number_of_children * child_height );
+
+    for ( const auto& child : children() )
+    {
+      AssertThat( child->top_left().y, Equals( next_y ) );
+      next_y += child_height;
+    }
+  }
+
+  const size_t number_of_children{ 5u };
+  std::unique_ptr< test::WindowRestructureBundle > restructure_bundle;
+  const the::ui::Window::Coordinate top_left{ 100, 200 };
+  const the::ui::Size size{ 1000, 2000 };
+};
