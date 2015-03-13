@@ -168,10 +168,14 @@ Describe( a_window )
           top_left,
           size,
           [ &was_called = was_restructure_called,
-            &number_of_calls = number_of_restructure_calls ]( const the::ui::Window& )
+            &number_of_calls = number_of_restructure_calls ]( const the::ui::Window& window )
           {
             ++number_of_calls;
             was_called = true;
+            for ( const auto& child : window.children() )
+            {
+              child->resize( { 0, 0 } );
+            }
           } );
     }
 
@@ -187,6 +191,14 @@ Describe( a_window )
       was_restructure_called = false;
       window->delete_child( &new_window );
       AssertThat( was_restructure_called, Equals( true ) );
+    }
+
+    It(allows_children_to_request_one_more_restructure_round)
+    {
+      auto child( std::make_unique< test::Window >() );
+      child->ask_for_restructure = true;
+      window->add_child( std::move( child ) );
+      AssertThat( number_of_restructure_calls, Equals( 2u ) );
     }
 
     It(calls_the_restructure_function_when_moved)

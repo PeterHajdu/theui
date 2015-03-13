@@ -1,9 +1,9 @@
 #pragma once
 
+#include <thectci/dispatcher.hpp>
 #include <memory>
 #include <vector>
 #include <functional>
-#include <thectci/dispatcher.hpp>
 
 namespace the
 {
@@ -173,6 +173,11 @@ class Window
       return m_is_visible;
     }
 
+    void request_restructure()
+    {
+      was_restructure_requested = true;
+    }
+
   private:
     void set_visibility()
     {
@@ -195,9 +200,15 @@ class Window
       m_dispatcher.dispatch( the::ui::Resized() );
     }
 
+    volatile bool was_restructure_requested{ false };
     void restructure()
     {
-      m_window_restructure( *this );
+      do
+      {
+        was_restructure_requested = false;
+        m_window_restructure( *this );
+      }
+      while( was_restructure_requested );
     }
 
     Container m_children;

@@ -59,10 +59,18 @@ class Window : public the::ui::Window
       did_leave = true;
     }
 
+    bool ask_for_restructure{ false };
     bool was_resized{ false };
+
     void handle_resized( const the::ui::Resized& )
     {
       was_resized = true;
+
+      if ( ask_for_restructure )
+      {
+        parent()->request_restructure();
+        ask_for_restructure = false;
+      }
     }
 };
 
