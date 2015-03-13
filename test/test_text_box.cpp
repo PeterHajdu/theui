@@ -1,4 +1,5 @@
 #include <theui/text_box.hpp>
+#include <theui/list_restructure.hpp>
 
 #include "lorem_ipsum.hpp"
 
@@ -99,6 +100,21 @@ Describe( a_text_box )
     AssertThat( text_box->size().height, Equals( number_of_lines * content.back().height() ) );
   }
 
+  It(requests_a_restructure_after_height_increase)
+  {
+    const the::ui::Size thinner_parent_size{ size.width - 5, size.height };
+    size_t number_of_restructure_calls( 0 );
+    the::ui::Window parent(
+        { 0, 0 },
+        thinner_parent_size,
+        [ &number_of_restructure_calls ]( const auto& parent )
+        {
+          the::ui::front_from_top_with_fixed_height( parent );
+          ++number_of_restructure_calls;
+        } );
+    parent.add_child( std::move( text_box ) );
+    AssertThat( number_of_restructure_calls, Equals( 2u ) );
+  }
 
   It(splits_up_text_in_the_first_line)
   {

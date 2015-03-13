@@ -73,6 +73,12 @@ class TextBox: public Window
           m_lines.back().back().height() * m_lines.size() );
       const int keep_width( size().width );
       resize( { keep_width, needed_height } );
+
+      auto my_parent( parent() );
+      if ( my_parent )
+      {
+        my_parent->request_restructure();
+      }
     }
 
 
